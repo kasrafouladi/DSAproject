@@ -3,9 +3,9 @@ using namespace std;
 
 int n;
 
-map<string, int> ind;
+unordered_map<string, int> ind;
 
-set<string> Str;
+vector<string> symbol;
 
 vector<vector<int>> g, back_edges;
 
@@ -15,11 +15,11 @@ vector<bool> terminal, in_path, mark;
 
 vector<int> par;
 
-vector< pair<string, vector<string> > > G;
+vector<vector<vector<int>>> productions;
 
-void unite(int u, int v){
-    for(auto e: first[v])
-        first[u].insert(e);
+void unite(set<int> &set1, set<int> &set2){
+    for(auto e: set2)
+        set1.insert(e);
     return;
 }
 
@@ -30,11 +30,11 @@ void dfs_first(int u, int prv){
         first[u].insert(u);
     for(auto v: g[u])
         if(in_path[v])
-            back_edge[v].push_back(u);
+            back_edges[v].push_back(u);
         else{
             if(!mark[v])
-                dfs(v, u);
-            unite(u, v);
+                dfs_first(v, u);
+            unite(first[u], first[v]);
         }
     in_path[u] = false;
     return;
@@ -45,7 +45,7 @@ void dfs_back_edge(int u){
     for(auto e: back_edges[u]){
         int child = e;
         while(child != u){
-            unite(child, u);
+            unite(first[child], first[u]);
             child = par[child];
         }
     }
@@ -56,25 +56,95 @@ void dfs_back_edge(int u){
 }
 
 int main(){
-    cout << "enter the directory of the grammer file" << '\n';
-    string dir, line;
+    cout << "enter the directory of the grammer file:" << '\n';
+    string dir;
     cin >> dir;
-    vector<string> file;
+    if(dir.back() == '/' || dir.back() == '\\')
+        dir.pop_back();
+    ifstream file(dir + "/grammer.txt");
+    int cnt = 0;
+    while(cnt != 2){
+        string s = "~";
+        file >> s;
+        if(s[0] == '~'){
+            ++cnt;
+            continue;
+        }
+        symbol.push_back(s);
+        ind[s] = n;
+        if(!cnt)
+            terminal.push_back(false);
+        else
+            terminal.push_back(true);
+        ++n;
+    }
+    /// /////////
+    productions.assign(n, {});
+    g.assign(n, {}), back_edges.assign(n, {});
+    first.assign(n, {}), follow.assign(n, {});
+    in_path.assign(n, false), mark.assign(n, false);
+    back_edges.assign(n, {}), par.assign(n, -1);
+    /// /////////
     while(true){
-        getline(dir, line);
-        if(line[0] == '~')
+        string sym;
+        file >> sym;
+        cout << "- " << sym << '\n';
+        if(sym == "0")
             break;
-        file.push_back(line);
+        int i = ind[sym];
+        while(true){
+            string pr, token = "";
+            file >> pr;
+            cout << " - " << pr << '\n';
+            productions[i].push_back({});
+            if(pr[0] == '~')
+                break;
+            int cnt = 0;
+            cout << "  => ";
+            for(int j = 0; j < pr.size(); ++j){
+                cout << pr[j];
+                if(pr[j] == '\''){
+                    int k = ind[token];
+                    if(!cnt)
+                        g[i].push_back(k);
+                    ++cnt;
+                    productions[i].back().push_back(k), token = "";
+                }
+                else
+                    token += pr[j];
+            }
+            cout << '\n';
+        }
     }
-    for(int i = 0; i < file.size(); ++i){
-        str = ;
+    file.close();
+    /// ///////
+    for(int i = 0; i < n; ++i){
+        cout << symbol[i] << ":\n\t";
+        for(int e: g[i])
+            cout << symbol[e] << " ";
+        cout << '\n';
     }
-
-    int src = ind["Start"];
-    dfs_first(src, src);
+    /// //////
+    for(int i = 0; i < n; ++i)
+        if(!mark[i])
+            dfs_first(i, i);
     for(int i = 0; i < n; ++i)
         mark[i] = false;
-    dfs_back_edge(src);
-
+    for(int i = 0; i < n; ++i)
+        if(!mark[i])
+            dfs_back_edge(i);
+    /// //////
+    ofstream first_follow(dir + "/first_follow.txt");
+    cout << "First:\n-----------------\n";
+    for(int i = 0; i < n; ++i){
+        first_follow << symbol[i] << " ";
+        cout << "First(" << symbol[i] << ")=\n\t{";
+        for(auto e: first[i]){
+            first_follow << e << " ";
+            cout << symbol[e] << ", ";
+        }
+        cout << "\b\b}\n";
+    }
+    first_follow.close();
     return 0;
 }
