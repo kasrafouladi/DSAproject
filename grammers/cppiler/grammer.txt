@@ -1,0 +1,74 @@
+Start S N M T Id L Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C
+~~
+* Start
+S'N'M
+* S 
+#include'<'iostream'>'!
+* N
+using'namespace'std';
+* M
+int'main'()'{'T'return'0';'} int'main'(')'{'T'} int'main'(')'{'}
+* T
+Id'T L'T Lc'T Input'T Output'T Id L Lc Input Output
+* Id
+int'L float'L
+* L
+identifier'Assign'Operation identifier','L identifier'; identifier'['number']','L identifier'['number']';
+* Operation
+number'P identifier'P number identifier
+* P
+O'W'P O'W
+* O
++ − ∗ / %
+* W 
+number | identifier
+* Assign
+='identifier =
+* Expression
+Operation'K'Operation
+* K
+='= >'= <'= !'=
+* Lc
+while'('Expression')'{'T'} Condition
+* Condition
+if'('Expression')'{'T'} if'('Expression')'{'T'}'Condition1
+* Condition1
+else'if'('Expression')'{'T'}'Condition1 else'if'('Expression')'{'T'} else'{'T'} 
+* Input
+cin'>>'identifier'F'; cin'>>'identifier';
+* F
+>>'identifier'F >>'identifier';
+* Output
+cout'<<'C'H'; cout'<<'C'; 
+* H 
+<<'C'H <<'C';
+* C
+number string identifier endl
+~~~~
+original:
+(in previous one the epsilon prodoctions is removed to compute the first follow and some other things easier and minor issues fixed)
+
+Start -> SNM
+S -> #include<iostream>
+N -> using namespace std;
+M -> int main(){TV}
+V -> return 0; | e
+T -> Id T | L T | Lc T | Input T | Output T | e
+Id -> int L | float L 
+L -> identifier Assign Z
+Z -> identifier Assign Z | ;
+Operation -> number P | identifier P
+P -> OWP | e
+O -> + | − | ∗
+W -> number | identifier
+Assign -> = Operation | e
+Expression -> Operation K Operation
+K -> == | >= | <= | !=
+Lc -> while(Expression){T} | Condition
+Condition -> if(Expression){T} | if(Expression){T} Condition1
+Condition1 -> else if(Expression){T} Condition1 | else if(Expression){T} | else{T} 
+Input -> cin >> identifier F;
+F -> >> identifier F | e
+Output -> cout << CH;
+H -> << CH | e
+C -> number | string | identifier
