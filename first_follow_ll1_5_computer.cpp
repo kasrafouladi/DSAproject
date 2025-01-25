@@ -158,7 +158,6 @@ void build_prod_list(){
                 else
                     token += pr[j];
             }
-            cout << "\n  => " << productions[i].back().size() << "\n  ------\n";
         }
     }
     return;
@@ -272,7 +271,9 @@ int main(){
     /// //////
     compute_follow();
     /// //////
-    print_grammmer();
+    prd.open(dir + "/productions.txt");
+    print_grammer();
+    prd.close();
     /// /////
     symbols.open(dir + "/symbols.txt");
     for(int i = 0; i < n; ++i)
@@ -280,7 +281,6 @@ int main(){
     symbols << '\n';
     symbols.close();
     /// //////
-    prd.open(dir + "/productions.txt");
     cout << "\n-----------------\nFirst:\n-----------------\n";
     for(int i = 0; i < n; ++i){
         cout << "First(" << symbol[i] << "):\n\t{";
@@ -327,7 +327,7 @@ int main(){
                 if(j != nt && p_table[{i, j}].size()){
                     cout << "~ [" << i << ":" << symbol[i] << ", " << j << ":" << symbol[j] << "] = " << p_table[{i, j}].size() << '\n';
                     cout << symbol[i] << "("<< i << "):\n";
-                    ll_1_5_pars << i << " " << j << "\n" << p_table[{i, j}].size() << '\n';
+                    ll_1_5_pars << i << " " << j << '\n' << p_table[{i, j}].size() << '\n';
                     for(auto &e: p_table[{i, j}]){
                         ll_1_5_pars << e << '\n';
                         for(auto &e1: productions[i][e])
@@ -335,13 +335,23 @@ int main(){
                         cout << '\n';
                     }
                 }
-                if(j == nt){
-                    for(auto &e: follow[i])
+                if(j == nt && p_table[{i, j}].size()){
+                    for(auto &e: follow[i]){
                         p_table[{i, e}] = p_table[{i, j}];
-
+                        cout << "~ [" << i << ":" << symbol[i] << ", " << e << ":" << symbol[e] << "] = " << p_table[{i, e}].size() << '\n';
+                        cout << symbol[i] << "("<< i << "):\n";
+                        ll_1_5_pars << i << " " << e << '\n' << p_table[{i, e}].size() << '\n';
+                        for(auto &e1: p_table[{i, e}]){
+                            ll_1_5_pars << e1 << '\n';
+                            for(auto &e2: productions[i][e1])
+                                cout << symbol[e2] << "(" << e2 << ")";
+                            cout << '\n';
+                        }
+                    }
                     p_table[{i, j}] = {};
                 }
         }
+    ll_1_5_pars.close();
     cout << "---\n";
     return 0;
 }

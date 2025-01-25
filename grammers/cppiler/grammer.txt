@@ -31,7 +31,7 @@ O
 W
     number' Identifier' ~
 Assign
-    =(1)'Identifier'Assign' =(0)' ~
+    =(0)'Identifier'Assign' =(1)' ~
 Expression
     Operation'K'Operation' ~
 K
@@ -54,120 +54,12 @@ C
     string' Operation' endl' ~
 Identifier
     identifier(0)' identifier(1)'['Operation']' ~
+~~~~
+else if ===> else(1)
+else{}  ===> else(0)
 
-~~~~~~~~~~~~~~~
+= S {;|,} n{=}(S)=0 ===> =(1)
+=                   ===> =(0)
 
-Start S N M T Id L Init Z Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C D Identifier
-~~non-terminals
-
-#include < iostream > using namespace std ; int  main ( ) { } return float while [ ] identifier number , + * - / % = ! if else cin cout string endl e
-~~terminals
-
-Start
-    S'N'M' ~
-S
-    #include'<'iostream'>' ~
-N
-    using'namespace'std';' ~
-M
-    int'main'(')'{'T'}' int'main'(')'{'}' ~
-T
-    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' Id' L' Lc' Input' Output' return'Identifier';' ~
-Id
-    int'L' float'L' ~
-L
-    Identifier'Init' Z' Operation'Z' ~
-Init
-    Assign'Operation'Z' Z' ~
-Z
-    ;' ,'L' ~
-Operation
-    number'P' Identifier'P' number' Identifier' ~
-P
-    O'W'P' O'W' ~
-O
-    +' -' *' /' %' ~
-W
-    number' Identifier' ~
-Assign
-    ='Identifier'Assign' =' ~
-Expression
-    Operation'K'Operation' ~
-K
-    ='=' >'=' <'=' !'=' ~
-Lc
-    while'('Expression')'{'T'}' Condition' ~
-Condition
-    if'('Expression')'{'T'}' if'('Expression')'{'T'}'Condition1' ~
-Condition1
-    else'if'('Expression')'{'T'}'Condition1' elif'('Expression')'{'T'}' else'{'T'}' ~
-Input
-    cin'F' ~
-F
-    >'>'Identifier'F' ;' ~
-Output
-    cout'H' ~ 
-H
-    <'<'C'H' ;' ~
-C
-    number' string' Identifier' endl' ~
-Identifier
-    identifier' identifier'['D']' ~
-D
-    number' Identifier' ~
-~~~~~
-original:
-(in previous one the epsilon prodoctions is removed by an algorithm to compute the first follow and some other things easier)
-
-Start
-    S'N'M' ~
-S
-    #include'<'iostream'>' ~
-N
-    using'namespace'std';' ~
-M
-    int'main'(')'{'T'}' ~
-T
-    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' e' ~
-Id
-    int'L' float'L' ~
-L
-    Identifier'Init' Z' Operation'Z' ~
-Init
-    Assign'Operation'Z' Z' ~
-Z
-    ;' ,'L' ~
-Operation
-    number'P' Identifier'P' ~
-P
-    O'W'P' e' ~
-O
-    +' -' *' /' %' ~
-W
-    number' Identifier' ~
-Assign
-    ='Identifier'Assign' =' ~
-Expression
-    Operation'K'Operation' ~
-K
-    ='=' >'=' <'=' !'=' ~
-Lc
-    while'('Expression')'{'T'}' Condition' ~
-Condition
-    if'('Expression')'{'T'}'Condition1' ~
-Condition1
-    else'if'('Expression')'{'T'}'Condition1' else'{'T'}' e' ~
-Input
-    cin'F' ~
-F
-    >'>'Identifier'F' ;' ~
-Output
-    cout'H' ~ 
-H
-    <'<'C'H' ;' ~
-C
-    number' string' Identifier' endl' ~
-Identifier
-    identifier' identifier'['D']' ~
-D
-    number' Identifier' ~
+identifier[] ===> identifier(1)
+identifier   ===> identifier(0)
