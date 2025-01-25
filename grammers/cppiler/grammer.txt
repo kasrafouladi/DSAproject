@@ -1,7 +1,7 @@
-Start S N M T Id L Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C
+Start S N M T Id L Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C D Identifier
 ~~non-terminals
 
-#include < iostream > ! using namespace std ; int  main ( ) { } return float while [ ] identifier number , + * - / % = ! while if else cin cout string endl
+#include < iostream > using namespace std ; int  main ( ) { } return float while [ ] identifier number , + * - / % = ! if else cin cout string endl
 ~~terminals
 
 Start
@@ -11,25 +11,25 @@ S
 N
     using'namespace'std';' ~
 M
-    int'main'()'{'T'return'number';'}' int'main'(')'{'T'}' int'main'(')'{'}' ~
+    int'main'(')'{'T'}' int'main'(')'{'}' ~
 T
-    Id'T' L'T' Lc'T' Input'T' Output'T' Id' L' Lc' Input' Output' ~
+    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' Id' L' Lc' Input' Output' return'Identifier';' ~
 Id
-    int'L' float'L' ~
+    int'L' float'L'  ~
 L
-    identifier'Assign'Operation identifier','L identifier';' identifier'['number']','L' identifier'['number']';' ~
+    identifier'Assign'Operation','L' Identifier','L' identifier'Assign'Operation';' Identifier';' ~
 Operation
-    number'P' identifier'P' number' identifier' ~
+    number'P' Identifier'P' number' Identifier' ~
 P
     O'W'P' O'W' ~
 O
     +' -' *' /' %' ~
 W
-    number' identifier' ~
+    number' Identifier' ~
 Assign
-    ='identifier' =' ~
+    ='Identifier'Assign' =' ~
 Expression
-    Operation'K'Operation ~
+    Operation'K'Operation' ~
 K
     ='=' >'=' <'=' !'=' ~
 Lc
@@ -39,16 +39,19 @@ Condition
 Condition1
     else'if'('Expression')'{'T'}'Condition1' else'if'('Expression')'{'T'}' else'{'T'}' ~
 Input
-    cin'>'>'identifier'F';' cin'>'>'identifier';' ~
+    cin'>'>'Identifier'F';' cin'>'>'Identifier';' ~
 F
-    >'>'identifier'F' >'>'identifier';' ~
+    >'>'Identifier'F' >'>'Identifier';' ~
 Output
     cout'<'<'C'H';' cout'<'<'C';' ~ 
 H
     <'<'C'H' <'<'C';' ~
 C
-    number' string' identifier' endl' ~
-0
+    number' string' Identifier' endl' ~
+Identifier
+    identifier' identifier'['D']' ~
+D
+    number' Identifier' ~
 ~~~~~
 original:
 (in previous one the epsilon prodoctions is removed to compute the first follow and some other things easier and minor issues fixed)
@@ -70,10 +73,12 @@ Assign -> = Operation | e
 Expression -> Operation K Operation
 K -> == | >= | <= | !=
 Lc -> while(Expression){T} | Condition
-Condition -> if(Expression){T} | if(Expression){T} Condition1
-Condition1 -> else if(Expression){T} Condition1 | else if(Expression){T} | else{T} 
+Condition -> if(Expression){T} Condition1
+Condition1 -> else if(Expression){T} Condition1 | else{T} | e
 Input -> cin >> identifier F;
 F -> >> identifier F | e
 Output -> cout << CH;
 H -> << CH | e
 C -> number | string | identifier
+Identifier -> identifier | identifier[D]
+D -> number | Identifier
