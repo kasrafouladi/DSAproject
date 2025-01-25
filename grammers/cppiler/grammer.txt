@@ -1,7 +1,7 @@
 Start S N M T Id L Init Z Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C Identifier
 ~~non-terminals
 
-e #include < iostream > using namespace std ; int  main ( ) { } return float while [ ] identifier(0) identifier(1) number , + * - / % =(0) ! if else(0) cin cout string endl else(1) =(1)
+e #include < iostream > using namespace std ; int  main ( ) { } return float while [ ] identifier(0) identifier(1) number , + * - / % =(0) ! if else(0) cin cout string endl else(1) =(1) break continue $
 ~~terminals
 
 Start
@@ -13,7 +13,7 @@ N
 M
     int'main'(')'{'T'}' ~
 T
-    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' e' ~
+    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' break';'T' continue';'T' e' ~
 Id
     int'L' float'L' ~
 L
@@ -31,11 +31,11 @@ O
 W
     number' Identifier' ~
 Assign
-    =(0)'Identifier'Assign' =(1)' ~
+    =(1)'Identifier'Assign' =(0)' ~
 Expression
     Operation'K'Operation' ~
 K
-    =(0)'=(0)' >'=(0)' <'=(0)' !'=(0)' ~
+    =(1)'=(0)' >'=(0)' <'=(0)' !'=(0)' ~
 Lc
     while'('Expression')'{'T'}' Condition' ~
 Condition
@@ -58,8 +58,8 @@ Identifier
 else if ===> else(1)
 else{}  ===> else(0)
 
-= S {;|,} n{=}(S)=0 ===> =(1)
-=                   ===> =(0)
+= (identifier =) | (=)     ===> =(1)
+=                          ===> =(0)
 
 identifier[] ===> identifier(1)
 identifier   ===> identifier(0)

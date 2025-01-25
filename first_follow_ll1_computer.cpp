@@ -20,7 +20,7 @@ vector<int> par;
 vector<vector<vector<int>>> productions;
 
 ifstream file;
-ofstream first_follow, ll_1_5_pars, symbols, prd;
+ofstream first_follow, ll_1_pars, symbols, prd;
 
 void unite(set<int> &set1, set<int> &set2){
     for(auto e: set2)
@@ -63,7 +63,7 @@ void dfs_back_edge(int u){
 void dfs_last(int u, int prv){
     par[u] = prv;
     mark[u] = in_path[u] = true;
-    if(u != nt)
+    if(u != ind["e"])
         last[u].insert(u);
     for(auto v: g_last[u])
         if(in_path[v])
@@ -158,6 +158,7 @@ void build_prod_list(){
                 else
                     token += pr[j];
             }
+            cout << '\n';
         }
     }
     return;
@@ -224,7 +225,16 @@ void compute_follow(){
         for(const auto &token: productions[i])
             for(int j = 0; j + 1 < token.size(); ++j)
                 for(auto &k: last[token[j]])
-                    unite(follow[k], first[token[j + 1]]), follow[k].erase(nt);
+                    unite(follow[k], first[token[j + 1]]), follow[k].erase(ind["e"]);
+    for(int i = 0; i < n; ++i)
+        if(follow[i].empty())
+            follow[i].insert(ind["$"]);
+    for(int i = 0; i < n; ++i)
+        for(auto e: last[i]){
+            if(binary_search(follow[e].begin(), follow[e].end(), ind["$"]))
+                follow[i].insert(ind["$"]);
+                break;
+        }
     return;
 }
 
@@ -248,16 +258,15 @@ void print_grammer(){
 
 int main(){
     cout << "enter the directory of the grammer file:" << '\n';
-    string dir = "C:\\Users\\Lenovo\\OneDrive\\Desktop\\Projects\\DSAproject\\grammers\\cppiler";
+    string dir = "./grammers/cppiler";
     //cin >> dir;
     if(dir.back() == '/' || dir.back() == '\\')
         dir.pop_back();
-    file.open(dir + "/grammer.txt");
     /// ////////
+    file.open(dir + "/grammer.txt");
     enumerate_symbols();
     initialize_vectors();
     build_prod_list();
-    /// ///////
     file.close();
     /// ///////
     print_g();
@@ -313,8 +322,8 @@ int main(){
         cout << "}\n";
     }
     first_follow.close();
-    cout << "\n-----------------\nLL(1.5)-Pars-table:\n-----------------\n";
-    ll_1_5_pars.open(dir + "/ll_1_5_pars.txt");
+    cout << "\n-----------------\nLL1-Pars-table:\n-----------------\n";
+    ll_1_pars.open(dir + "/ll_1_pars.txt");
     for(int i = 0; i < nt; ++i)
         for(int j = nt; j < n; ++j){
                 int k = 0;
@@ -327,9 +336,9 @@ int main(){
                 if(j != nt && p_table[{i, j}].size()){
                     cout << "~ [" << i << ":" << symbol[i] << ", " << j << ":" << symbol[j] << "] = " << p_table[{i, j}].size() << '\n';
                     cout << symbol[i] << "("<< i << "):\n";
-                    ll_1_5_pars << i << " " << j << '\n' << p_table[{i, j}].size() << '\n';
+                    ll_1_pars << i << " " << j << '\n' << p_table[{i, j}].size() << '\n';
                     for(auto &e: p_table[{i, j}]){
-                        ll_1_5_pars << e << '\n';
+                        ll_1_pars << e << '\n';
                         for(auto &e1: productions[i][e])
                             cout << symbol[e1] << "(" << e1 << ")";
                         cout << '\n';
@@ -340,9 +349,9 @@ int main(){
                         p_table[{i, e}] = p_table[{i, j}];
                         cout << "~ [" << i << ":" << symbol[i] << ", " << e << ":" << symbol[e] << "] = " << p_table[{i, e}].size() << '\n';
                         cout << symbol[i] << "("<< i << "):\n";
-                        ll_1_5_pars << i << " " << e << '\n' << p_table[{i, e}].size() << '\n';
+                        ll_1_pars << i << " " << e << '\n' << p_table[{i, e}].size() << '\n';
                         for(auto &e1: p_table[{i, e}]){
-                            ll_1_5_pars << e1 << '\n';
+                            ll_1_pars << e1 << '\n';
                             for(auto &e2: productions[i][e1])
                                 cout << symbol[e2] << "(" << e2 << ")";
                             cout << '\n';
@@ -351,7 +360,7 @@ int main(){
                     p_table[{i, j}] = {};
                 }
         }
-    ll_1_5_pars.close();
+    ll_1_pars.close();
     cout << "---\n";
     return 0;
 }

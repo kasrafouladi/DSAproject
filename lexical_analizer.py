@@ -3,8 +3,8 @@ fsm_graph = {
         "num1": lambda c: c.isdigit(),
         "str1": lambda c: c == '"',
         "id1": lambda c: c.isalpha() or c == "_",
-        "sym1": lambda c: c in "{()},[];+-*/",
-        "sym3": lambda c: c in "<>="
+        "sym1": lambda c: c in "{()},[];+-*/%",
+        "sym3": lambda c: c in "<>!="
     },
     "num1": {
         "num1": lambda c: c.isdigit(),
@@ -12,7 +12,7 @@ fsm_graph = {
     },
     "str1": {
         "str1": lambda c: True,  
-        "str2": lambda c: c == "\""
+        "str2": lambda c: c == '"'
     },
     "id1": {
         "id1": lambda c: c.isalnum() or c == "_",
@@ -43,19 +43,19 @@ accept_states = {
 start_state = "start"
 
 reserved_words = {
-    "if", "else", "while", "return", "int", "float",
-    "#include", "using", "namespace", "iostream", "std", "main" ,"void"
+    "if", "else", "while", "return", "break", "continue", "int", "float",
+    "#include", "using", "namespace", "iostream", "std", "main"
 }
 
 def check_reserved_word(word):
     return word in reserved_words
 
-def run_fsm(fsm_graph, accept_states, start_state, text):
+def run_fsm(text):
+    global fsm_graph, accept_states, start_state
     current_state = start_state
     current_word = ""
     tokens = []
     in_string = skip_next = False
-    #print(text, flush = True)
     for i, char in enumerate(text):
         if skip_next:
             skip_next = False
@@ -141,21 +141,19 @@ def run_fsm(fsm_graph, accept_states, start_state, text):
             tokens.append(("Unknown", current_word))
     return tokens
 
-def tokenize(cpp_code):    
-    all_tokens = [] 
-    lines = cpp_code.split('\n')
-    for line in lines:
-        stripted_line = line.strip() 
-        if stripted_line:  
-            tokens = run_fsm(fsm_graph, accept_states, start_state, stripted_line)
-            all_tokens.extend(tokens)
+def tokenize(dir = './sampels/code.cpp'):    
+    all_tokens = []
+    cpp_code = open(dir, 'r').read().replace("\n", " $ ")
+    cpp_code = cpp_code.split()
+    cpp_code.append("$")
+    if __name__ == "__main__":
+        print(cpp_code)
+    all_tokens = run_fsm(cpp_code)
     return all_tokens
 
 # All of functions complexity = O(n), n is lenght of the string that they get as argumnet
 def __main__():
-    dir = './sampels/code.cpp'
-    cpp_code = open(dir, 'r').read()
-    tokens = tokenize(cpp_code)
+    tokens = tokenize()
     for token in tokens:
         print(token, flush = True)
 

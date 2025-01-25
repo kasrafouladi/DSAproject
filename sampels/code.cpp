@@ -12,12 +12,12 @@ int main(){
             cout << "*";
             j = j + 1;
         }
-        cout << "\n";
+        cout << endl;
         i = i + 1;
     }
     while(true){
         break;
     }
-    cout << "___________________\n";
+    cout << "___________________" << endl;
     return 0;
 }
