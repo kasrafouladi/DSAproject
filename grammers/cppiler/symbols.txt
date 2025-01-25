@@ -1,0 +1,1 @@
+Start S N M T Id L Init Z Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C Identifier e #include < iostream > using namespace std ; int main ( ) { } return float while [ ] identifier(0) identifier(1) number , + * - / % =(0) ! if else(0) cin cout string endl else(1) =(1) 

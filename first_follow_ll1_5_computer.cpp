@@ -20,7 +20,7 @@ vector<int> par;
 vector<vector<vector<int>>> productions;
 
 ifstream file;
-ofstream first_follow, ll_1_5_pars;
+ofstream first_follow, ll_1_5_pars, symbols, prd;
 
 void unite(set<int> &set1, set<int> &set2){
     for(auto e: set2)
@@ -63,7 +63,8 @@ void dfs_back_edge(int u){
 void dfs_last(int u, int prv){
     par[u] = prv;
     mark[u] = in_path[u] = true;
-    last[u].insert(u);
+    if(u != nt)
+        last[u].insert(u);
     for(auto v: g_last[u])
         if(in_path[v])
             back_edges[v].push_back(u);
@@ -108,12 +109,18 @@ void enumerate_symbols(){
             terminal.push_back(true);
         ++n;
     }
+    nt = te = 0;
+    for(int i = 0; i < n; ++i)
+        if(terminal[i])
+            ++te;
+        else
+            ++nt;
     return;
 }
 
 void initialize_vectors(){
     productions.assign(n, {}), last.assign(n, {});
-    g.assign(n, {}), g_last.assign(n, {}), back_edges.assign(n, {});
+    g.assign(n, {}), g_last.assign(n, {});
     first.assign(n, {}), follow.assign(n, {});
     in_path.assign(n, false), mark.assign(n, false);
     back_edges.assign(n, {}), par.assign(n, -1);
@@ -157,18 +164,7 @@ void build_prod_list(){
     return;
 }
 
-int main(){
-    cout << "enter the directory of the grammer file:" << '\n';
-    string dir;
-    cin >> dir;
-    if(dir.back() == '/' || dir.back() == '\\')
-        dir.pop_back();
-    file.open(dir + "/grammer.txt");
-    enumerate_symbols();
-    initialize_vectors();
-    build_prod_list();
-    file.close();
-    /// ///////
+void print_g(){
     cout << "____________________________\n";
     cout << "G adjancey list:";
     for(int i = 0; i < n; ++i){
@@ -178,6 +174,11 @@ int main(){
         cout << '\n';
     }
     cout << "____________________________\n";
+    return;
+}
+
+void print_g_last(){
+    cout << "____________________________\n";
     cout << "G_last adjancey list:";
     for(int i = 0; i < n; ++i){
         cout << symbol[i] << ":\n\t";
@@ -186,7 +187,13 @@ int main(){
         cout << '\n';
     }
     cout << "____________________________\n";
-    /// //////
+    return;
+}
+
+void compute_first(){
+    back_edges.assign(n, {});
+    for(int i = 0; i < n; ++i)
+        mark[i] = false, par[i] = -1;
     for(int i = 0; i < n; ++i)
         if(!mark[i])
             dfs_first(i, i);
@@ -195,12 +202,13 @@ int main(){
     for(int i = 0; i < n; ++i)
         if(!mark[i])
             dfs_back_edge(i);
+    return;
+}
+
+void compute_last(){
+    back_edges.assign(n, {});
     for(int i = 0; i < n; ++i)
         mark[i] = false, par[i] = -1;
-    /// //////
-    first_follow.open(dir + "/first_follow.txt");
-    /// //////
-    back_edges.assign(n, {});
     for(int i = 0; i < n; ++i)
         if(!mark[i])
             dfs_last(i, i);
@@ -209,11 +217,71 @@ int main(){
     for(int i = 0; i < n; ++i)
         if(!mark[i])
             dfs_back_edge_last(i);
-    /// //////
-    cout << "\n-----------------\nFirst:\n-----------------\n";
+    return;
+}
+
+void compute_follow(){
     for(int i = 0; i < n; ++i)
-        first_follow << symbol[i] << " ";
-    first_follow << '\n';
+        for(const auto &token: productions[i])
+            for(int j = 0; j + 1 < token.size(); ++j)
+                for(auto &k: last[token[j]])
+                    unite(follow[k], first[token[j + 1]]), follow[k].erase(nt);
+    return;
+}
+
+void print_grammer(){
+    cout << "\n-----------------\nGrammer:\n-----------------\n";
+    for(int i = 0; i < n; ++i){
+        prd << productions[i].size() << '\n';
+        for(const auto &token: productions[i]){
+            cout << symbol[i] << " -> ";
+            prd << token.size() << '\n';
+            for(int j = 0; j < token.size(); ++j){
+                cout << symbol[token[j]] << "(" << token[j] << ") ";
+                prd << token[j] << " ";
+            }
+            prd << '\n';
+            cout << '\n';
+        }
+    }
+    return;
+}
+
+int main(){
+    cout << "enter the directory of the grammer file:" << '\n';
+    string dir = "C:\\Users\\Lenovo\\OneDrive\\Desktop\\Projects\\DSAproject\\grammers\\cppiler";
+    //cin >> dir;
+    if(dir.back() == '/' || dir.back() == '\\')
+        dir.pop_back();
+    file.open(dir + "/grammer.txt");
+    /// ////////
+    enumerate_symbols();
+    initialize_vectors();
+    build_prod_list();
+    /// ///////
+    file.close();
+    /// ///////
+    print_g();
+    print_g_last();
+    /// //////
+    compute_first();
+    /// //////
+    first_follow.open(dir + "/first_follow.txt");
+    /// //////
+    compute_last();
+    /// //////
+    compute_follow();
+    /// //////
+    print_grammmer();
+    /// /////
+    symbols.open(dir + "/symbols.txt");
+    for(int i = 0; i < n; ++i)
+        symbols << symbol[i] << " ";
+    symbols << '\n';
+    symbols.close();
+    /// //////
+    prd.open(dir + "/productions.txt");
+    cout << "\n-----------------\nFirst:\n-----------------\n";
     for(int i = 0; i < n; ++i){
         cout << "First(" << symbol[i] << "):\n\t{";
         first_follow << first[i].size() << '\n';
@@ -231,18 +299,6 @@ int main(){
             cout << symbol[e] << ", ";
         cout << "\b\b}\n";
     }
-    cout << "\n-----------------\nGrammer:\n-----------------\n";
-    for(int i = 0; i < n; ++i){
-        for(const auto &token: productions[i]){
-            cout << symbol[i] << " -> ";
-            for(int j = 0; j < token.size(); ++j)
-                cout << symbol[token[j]] << "(" << token[j] << ") ";
-            cout << '\n';
-            for(int j = 0; j + 1 < token.size(); ++j)
-                for(auto &k: last[token[j]])
-                    unite(follow[k], first[token[j + 1]]);
-        }
-    }
     cout << "\n-----------------\nFollow:\n-----------------\n";
     for(int i = 0; i < n; ++i){
         cout << "Follow(" << symbol[i] << "):\n\t{";
@@ -259,28 +315,32 @@ int main(){
     first_follow.close();
     cout << "\n-----------------\nLL(1.5)-Pars-table:\n-----------------\n";
     ll_1_5_pars.open(dir + "/ll_1_5_pars.txt");
-    nt = te = 0;
-    for(int i = 0; i < n; ++i)
-        if(terminal[i])
-            ++te;
-        else
-            ++nt;
     for(int i = 0; i < nt; ++i)
         for(int j = nt; j < n; ++j){
-            int k = 0;
-            p_table[{i, j}] = {};
-            for(const auto &token: productions[i]){
-                if(binary_search(first[token[0]].begin(), first[token[0]].end(), j)){
-                    p_table[{i, j}].push_back(k);
-                    ll_1_5_pars << i << " " << j << "\n\t";
-                    for(auto &e: token)
-                        ll_1_5_pars << e << " ";
-                    ll_1_5_pars << "\n";
+                int k = 0;
+                p_table[{i, j}] = {};
+                for(const auto &token: productions[i]){
+                    if(binary_search(first[token[0]].begin(), first[token[0]].end(), j))
+                        p_table[{i, j}].push_back(k);
+                    ++k;
                 }
-                ++k;
-            }
-            if(p_table[{i, j}].size())
-                cout << "~ [" << i << ":" << symbol[i] << ", " << j << ":" << symbol[j] << "] = " << p_table[{i, j}].size() << '\n';
+                if(j != nt && p_table[{i, j}].size()){
+                    cout << "~ [" << i << ":" << symbol[i] << ", " << j << ":" << symbol[j] << "] = " << p_table[{i, j}].size() << '\n';
+                    cout << symbol[i] << "("<< i << "):\n";
+                    ll_1_5_pars << i << " " << j << "\n" << p_table[{i, j}].size() << '\n';
+                    for(auto &e: p_table[{i, j}]){
+                        ll_1_5_pars << e << '\n';
+                        for(auto &e1: productions[i][e])
+                            cout << symbol[e1] << "(" << e1 << ")";
+                        cout << '\n';
+                    }
+                }
+                if(j == nt){
+                    for(auto &e: follow[i])
+                        p_table[{i, e}] = p_table[{i, j}];
+
+                    p_table[{i, j}] = {};
+                }
         }
     cout << "---\n";
     return 0;
