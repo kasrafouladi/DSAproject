@@ -58,3 +58,78 @@ def tokenize(dir="./sampels/code.cpp"):
 
 if __name__ == "__main__":
     tokenize()
+
+tokens = tokenize(dir="./sampels/code.cpp")
+
+def modify_tokens(tokens):
+    modified_tokens = []
+
+    for i, token in enumerate(tokens):
+        token_type = token[0][0]  
+        token_value = token[0][1]  
+        line_number = token[1]
+
+        if token_type == "symbol" and token_value == "=":
+            if i + 1 < len(tokens):
+                next_token = tokens[i + 1][0]
+                if next_token[1] == "=":  
+                    token_suffix = "(1)"
+                elif next_token[0] == "identifier":  
+                    
+                    if i + 2 < len(tokens) and tokens[i + 2][0][1] == "=":
+                        token_suffix = "(1)"  
+                    else:
+                        token_suffix = "(0)"  
+                else:
+                    token_suffix = "(0)"  
+            else:
+                token_suffix = "(0)"  
+            modified_token = {
+                "tokentype": token_type,
+                "token": f"={token_suffix}",
+                "value": "=",
+                "line": line_number
+            }
+        elif token_type == "reservedword" and token_value == "else":
+            
+            if i + 1 < len(tokens) and tokens[i + 1][0][1] == "if":
+                token_suffix = "(1)"  
+            else:
+                token_suffix = "(0)"  
+            modified_token = {
+                "tokentype": token_type,
+                "token": f"else{token_suffix}",
+                "value": "else",
+                "line": line_number
+            }
+        elif token_type == "identifier":
+           
+            if i + 1 < len(tokens) and tokens[i + 1][0][1] == "[":
+                token_suffix = "(1)"  
+            else:
+                token_suffix = "(0)"  
+            modified_token = {
+                "tokentype": token_type,
+                "token": f"{token_value}{token_suffix}",
+                "value": token_value,
+                "line": line_number
+            }
+        else:
+        
+            modified_token = {
+                "tokentype": token_type,
+                "token": token_value,
+                "value": token_value,
+                "line": line_number
+            }
+
+        
+        modified_tokens.append(modified_token)
+
+    return modified_tokens
+
+
+
+modified_tokens = modify_tokens(tokens)
+for token in modified_tokens:
+    print(token)
