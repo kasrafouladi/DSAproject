@@ -1,14 +1,19 @@
 import re
 
-reserved_words = ["int", "float", "void", "if", "while", "return", "main", "#include", "using", "namespace", "std", "cout", "cin" , "endl"]
+reserved_words = ["int", "float", "break", "continue", "if", "while", "return", "main", "#include", "using", "namespace", "std", "cout", "cin", "endl"]
 
 patterns = { 
     "#include": r"#include",
     "number": r"\b\d+(\.\d+)?\b",
-    "string": r'"[^"]*"',  
+    "string": r'"[^"]*"',
     "identifier": r"[a-zA-Z_][a-zA-Z0-9_]*", 
-    "symbol": r"==|!=|<=|>=|>>|<<|[+\-*/=;,{}()[\]<>]", 
+    "symbol": r"[\+\-\*\/%=!;,{}()\[\]<>]"
 }
+
+def is_white_space(c):
+    if c == " " or c == "\t" or c == "\n":
+        return True
+    return False
 
 def lexical_analyzer(code_lines):
     tokens = []  
@@ -29,33 +34,33 @@ def lexical_analyzer(code_lines):
                     index = match.end()
                     break
             if not match:
-                if line[index].isspace():
+                if is_white_space(line[index]):
                     index += 1  
                 else:
-                    print(f"{line_number}: {line[index]}")
-                    index += 1
+                    print(f"goorba Error:\nIn tokenization, an unknown character founded in line {line_number}:\n\"{line[index]}\" (character number {index})")
+                    exit()
     return tokens
 
-def __main__():
-    input_file_path = "./Samples/code.cpp"  
+def tokenize(dir="./sampels/code.cpp"):
     try:
-        with open(input_file_path, "r") as file:
+        with open(dir, "r") as file:
             input_lines = file.readlines()  
-        
-        tokens = lexical_analyzer(input_lines)
-
-        token_list = [] 
-        for token in tokens:
-            token_list.append(token)
-        #print(token_list)
-        return token_list
-
+        if __name__ == "__main__":
+            print("The code:\n_______________")
+            for line in input_lines:
+                print(line, end = "")
+            print("_______________")
+        return lexical_analyzer(input_lines)
     except FileNotFoundError:
-        print(f"Error: File not found at {input_file_path}")
+        print(f"~ oordak Error:\nFile not found at {dir}")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"~ oordak Error:\nAn error occurred: {e}")    
+    return []
 
-
+def __main__():
+    token_list = tokenize()
+    for token in token_list:
+        print(f"{token[0]}, in line {token[1]}")
 
 if __name__ == "__main__":
-    tokens = __main__()
+    __main__()

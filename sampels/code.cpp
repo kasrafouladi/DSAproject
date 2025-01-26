@@ -18,6 +18,7 @@ int main(){
     while(true){
         break;
     }
-    cout << "___________________" << endl;
+    cout<<"___________________"<<endl;
+    int khar3[3];
     return 0;
 }
