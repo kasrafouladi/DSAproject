@@ -24,6 +24,7 @@ productions = []
 pars_table = []
 token_table = []
 pars_tree = []
+np_parser = []
 terminal = []
 symbol = []
 childs = []
@@ -94,10 +95,10 @@ def build_token_table():
     return
 
 def build_pars_tree():
-    global pars_tree, childs, n
-    sp_char = Token("Special", "$", -1, len(token_list) + 1, "EOF", symbol_dict["$"])
+    global pars_tree, childs, n, token_list, np_parser
+    sp_char = Token(cat="Special", val="$", id=-1, rank=len(token_list) + 1, line="EOF", ind=symbol_dict["$"])
     token_list.append(sp_char)
-    pars_tree = []
+    pars_tree = np_parser = []
     pointer = 0
     cnt = 0
     stack = [[symbol_dict["$"], cnt]]
@@ -125,10 +126,11 @@ def build_pars_tree():
                 break
         else:
             if len(pars_table[stack_back[0]][token_list[pointer]]) > 0:
-                # reason behind [0]: this is a ll(1) parser but i wrote it more generalized
+                # reason behind [0]: this is a ll(1) parser but i wrote it in a generalized way
                 prod = pars_table[stack_back[0]][token_list[pointer]][0]
                 # [::-1] reverses the string but its like called by value and the list doesn't change
                 lst = productions[stack_back[0]][prod][::-1]
+                np_parser.append([stack_back[0], prod])
                 stack.pop()
                 for e in lst:
                     stack.append([e, cnt])
@@ -143,6 +145,7 @@ def build_pars_tree():
                 print(f"Something is wrong about token numebr {token_list[pointer].rank}")
                 break
     if __name__ == "__main__":
+        print("----------------------------")
         print("Adjancy list of pars tree:")
         for i in range(len(pars_tree)):
             if len(pars_tree[i].adj) > 0:
@@ -150,10 +153,18 @@ def build_pars_tree():
                 for e in pars_tree[i].adj:
                     print(symbol[e[0]], end = " ")
                 print(")\n")
+        print("----------------------------")
+        print("Np-parser:")
+        for e in range(len(np_parser)):
+            print(f"{symbol[e[0]]}: ( ", end="")
+            for e1 in np_parser[e[0]][e[1]]:
+                print(symbol[e1], end = " ")
+            print(")\n")
+        print("----------------------------")
     return
 
 def __main__():
-    global token_list, token_table, terminal, n
+    global token_list
     print("Loading data ...")
     enum_symbols()
     prepare_productions()

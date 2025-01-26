@@ -239,7 +239,8 @@ void compute_follow(){
 }
 
 void print_grammer(){
-    cout << "\n-----------------\nGrammer:\n-----------------\n";
+    cout << "____________________________\n";
+    cout << "Grammer:\n";
     for(int i = 0; i < n; ++i){
         prd << productions[i].size() << '\n';
         for(const auto &token: productions[i]){
@@ -253,6 +254,7 @@ void print_grammer(){
             cout << '\n';
         }
     }
+    cout << "____________________________\n";
     return;
 }
 
@@ -290,7 +292,7 @@ int main(){
     symbols << '\n';
     symbols.close();
     /// //////
-    cout << "\n-----------------\nFirst:\n-----------------\n";
+    cout << "\n-----------------\nFirst:\n";
     for(int i = 0; i < n; ++i){
         cout << "First(" << symbol[i] << "):\n\t{";
         first_follow << first[i].size() << '\n';
@@ -301,14 +303,14 @@ int main(){
         first_follow << '\n';
         cout << "\b\b}\n";
     }
-    cout << "\n-----------------\nLast:\n-----------------\n";
+    cout << "\n-----------------\nLast:\n";
     for(int i = 0; i < n; ++i){
         cout << "Last(" << symbol[i] << "):\n\t{";
         for(auto e: last[i])
             cout << symbol[e] << ", ";
         cout << "\b\b}\n";
     }
-    cout << "\n-----------------\nFollow:\n-----------------\n";
+    cout << "\n-----------------\nFollow:\n";
     for(int i = 0; i < n; ++i){
         cout << "Follow(" << symbol[i] << "):\n\t{";
         first_follow << follow[i].size() << '\n';
@@ -322,7 +324,7 @@ int main(){
         cout << "}\n";
     }
     first_follow.close();
-    cout << "\n-----------------\nLL1-Pars-table:\n-----------------\n";
+    cout << "\n-----------------\nLL1-Pars-table:\n";
     ll_1_pars.open(dir + "/ll_1_pars.txt");
     for(int i = 0; i < nt; ++i)
         for(int j = nt; j < n; ++j){
@@ -334,8 +336,8 @@ int main(){
                     ++k;
                 }
                 if(j != nt && p_table[{i, j}].size()){
-                    cout << "~ [" << i << ":" << symbol[i] << ", " << j << ":" << symbol[j] << "] = " << p_table[{i, j}].size() << '\n';
-                    cout << symbol[i] << "("<< i << "):\n";
+                    cout << "\n** pars table cell [" << symbol[i] << " (" << i << ")"  << ", " << symbol[j] << " (" << j << ")" << "]:  size=" << p_table[{i, j}].size() << '\n';
+                    cout << "    " << symbol[i] << "("<< i << "):\n";
                     ll_1_pars << i << " " << j << '\n' << p_table[{i, j}].size() << '\n';
                     for(auto &e: p_table[{i, j}]){
                         ll_1_pars << e << '\n';
@@ -347,8 +349,8 @@ int main(){
                 if(j == nt && p_table[{i, j}].size()){
                     for(auto &e: follow[i]){
                         p_table[{i, e}] = p_table[{i, j}];
-                        cout << "~ [" << i << ":" << symbol[i] << ", " << e << ":" << symbol[e] << "] = " << p_table[{i, e}].size() << '\n';
-                        cout << symbol[i] << "("<< i << "):\n";
+                        cout << "\n** pars table cell [" << symbol[i] << " (" << i << ")"  << ", " << symbol[e] << " (" << e << ")" << "]:  size=" << p_table[{i, e}].size() << '\n';
+                        cout << "    " << symbol[i] << "("<< i << "):\n";
                         ll_1_pars << i << " " << e << '\n' << p_table[{i, e}].size() << '\n';
                         for(auto &e1: p_table[{i, e}]){
                             ll_1_pars << e1 << '\n';
