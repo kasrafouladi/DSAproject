@@ -36,25 +36,26 @@ def lexical_analyzer(code_lines):
                     index += 1
     return tokens
 
-print("")
-input_lines = []
-while True:
-    line = input()
-    if line.strip() == "":
-        break
-    input_lines.append(line)
-
-tokens = lexical_analyzer(input_lines)
-
-token_list = []
-for token in tokens:
-    token_list.append(token)
-    
-#print(token_list)
-
 def __main__():
-    for token in tokens:
-        print(token, flush = True)
+    input_file_path = "./Samples/code.cpp"  
+    try:
+        with open(input_file_path, "r") as file:
+            input_lines = file.readlines()  
+        
+        tokens = lexical_analyzer(input_lines)
+
+        token_list = [] 
+        for token in tokens:
+            token_list.append(token)
+        #print(token_list)
+        return token_list
+
+    except FileNotFoundError:
+        print(f"Error: File not found at {input_file_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 
 if __name__ == "__main__":
-    __main__()
+    tokens = __main__()
