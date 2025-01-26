@@ -1,8 +1,8 @@
-
-/.vscode
-
 /__pycache__
 
 *.o
 
 *.exe
+
+/.vscode
+
