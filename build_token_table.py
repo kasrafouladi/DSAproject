@@ -13,7 +13,7 @@ class Token:
 token_list = []
 token_table = []
 
-def build_token_table(t_list):
+def build_token_table(tokens):
     global token_list, token_table
     t_list
     # last part
