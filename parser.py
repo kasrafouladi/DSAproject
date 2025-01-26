@@ -1,4 +1,4 @@
-from lexical_analizer import *
+from lexical_analyzer import *
 
 from build_token_table import *
 
@@ -155,9 +155,9 @@ def __main__():
     prepare_productions()
     prepare_p_table()
     print("-----------------\nTokenizing the sampel ...")
-    token_list = tokenize()
+    token_list = lexical_analyzer()
     print("-----------------\nBuilding the token table ...")
-    create_token_table(token_list)
+    build_token_table(token_list)
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
     print("-----------------\nDone!")
