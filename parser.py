@@ -17,7 +17,7 @@ pars_tree = []
 np_parser = []
 terminal = []
 symbol = []
-childs = []
+candidates = []
 par = []
 symbol_dict = {}
 
@@ -60,9 +60,9 @@ def prepare_productions(dir="./grammers/cppiler"):
     return
 
 def prepare_p_table(dir="./grammers/cppiler"):
-    global pars_table, childs, n
+    global pars_table, candidates, n
     pars_table = [[[] for j in range(n)] for i in range(n)]
-    childs = [[] for i in range(n)]
+    candidates = [[] for i in range(n)]
     file = open(dir + "/ll_1_pars.txt", 'r').read().split()
     for i in range(len(file)):
         file[i] = int(file[i])
@@ -75,12 +75,12 @@ def prepare_p_table(dir="./grammers/cppiler"):
         idx += 1
         for k in range(m):
             pars_table[i][j].append(file[idx])
-            childs[i].append(symbol[j])
+            candidates[i].append(symbol[j])
             idx += 1
     return
 
 def build_pars_tree():
-    global pars_tree, childs, n, token_list, np_parser, par
+    global pars_tree, candidates, n, token_list, np_parser, par
     sp_char = Token(cat="Special", val="$", id=-1, rank=len(token_list) + 1, line="EOF", ind=symbol_dict["$"])
     token_list.append(sp_char)
     pars_tree = np_parser = par = []
@@ -126,7 +126,7 @@ def build_pars_tree():
                 pars_tree[stack_back[1]].adj.reverse()
             else:
                 print("Hamta Error:")
-                print(f"In parsing, a compilation eror accoured. One of the token(s): {childs[stack_back[0]]} are missing in line {token_list[pointer].line}.")
+                print(f"In parsing, a compilation eror accoured. One of the token(s): {candidates[stack_back[0]]} are missing in line {token_list[pointer].line}.")
                 print("- $ is a special token which means the end of the file")
                 print(f"Something is wrong about token numebr {token_list[pointer].rank}")
                 break
@@ -140,7 +140,7 @@ def build_pars_tree():
                     print(symbol[e[0]], end = " ")
                 print(")\n")
         print("----------------------------")
-        print("Np-parser:")
+        print("Np-parser productions:")
         for e in range(len(np_parser)):
             print(f"{symbol[e[0]]}: ( ", end="")
             for e1 in np_parser[e[0]][e[1]]:
