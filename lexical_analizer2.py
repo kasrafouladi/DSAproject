@@ -47,8 +47,14 @@ while True:
 tokens = lexical_analyzer(input_lines)
 
 token_list = []
-print("\n")
 for token in tokens:
-    token_list.append(token[0])
+    token_list.append(token)
     
-print(token_list)
+#print(token_list)
+
+def __main__():
+    for token in tokens:
+        print(token, flush = True)
+
+if __name__ == "__main__":
+    __main__()
