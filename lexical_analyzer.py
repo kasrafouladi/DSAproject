@@ -4,10 +4,10 @@ reserved_words = ["int", "float", "break", "continue", "if", "while", "return", 
 
 patterns = { 
     "#include": r"#include",
-    "number": r"\b\d+(\.\d+)?\b",
+    "number": r"\b\d+(\.\d+)?(e(\+|\-)?\d+)?\b",
     "string": r'"[^"]*"',
     "identifier": r"[a-zA-Z_][a-zA-Z0-9_]*", 
-    "symbol": r"[\+\-\*\/%=!;,{}()\[\]<>]"
+    "symbol": r"[\+\-\*/%=!;,{}()\[\]<>]"
 }
 
 def is_white_space(c):
