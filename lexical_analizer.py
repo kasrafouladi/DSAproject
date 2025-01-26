@@ -1,8 +1,8 @@
 import re
 
-RESERVED_WORDS = {"int", "float", "void", "if", "while", "return", "main", "include", "using", "namespace", "std", "cout", "cin" , "endl" }
+reserved_words = ["int", "float", "void", "if", "while", "return", "main", "#include", "using", "namespace", "std", "cout", "cin" , "endl"]
 
-PATTERNS = { 
+patterns = { 
     "#include": r"#include",
     "number": r"\b\d+(\.\d+)?\b",
     "string": r'"[^"]*"',  
@@ -16,7 +16,7 @@ def lexical_analyzer(code_lines):
         index = 0
         while index < len(line):
             match = None
-            for token_type, pattern in PATTERNS.items():
+            for token_type, pattern in patterns.items():
                 regex = re.compile(pattern)
                 match = regex.match(line, index)
                 if match:
@@ -24,7 +24,7 @@ def lexical_analyzer(code_lines):
                     if token_type == "#include":
                         token_type = "reservedword"
                     if token_type == "identifier":
-                        token_type = "reservedword" if value in RESERVED_WORDS else "identifier"
+                        token_type = "reservedword" if value in reserved_words else "identifier"
                     tokens.append([[token_type, f"{value}"], line_number])
                     index = match.end()
                     break
