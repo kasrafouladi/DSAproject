@@ -149,13 +149,13 @@ def build_pars_tree():
         print("----------------------------")
     return
 
-def __main__():
+def pars(dir="./sampels/code.cpp"):
     print("Loading data ...")
     enum_symbols()
     prepare_productions()
     prepare_p_table()
     print("-----------------\nTokenizing the sampel ...")
-    tokens = tokenize(input("Please enter the path to the desired file:\n"))
+    tokens = tokenize(dir)
     print("-----------------\nBuilding the token table ...")
     build_token_table(tokens)
     print("-----------------\nBuilding the pars tree ...")
@@ -164,4 +164,4 @@ def __main__():
     return
 
 if __name__ == "__main__":
-    __main__()
+    pars()

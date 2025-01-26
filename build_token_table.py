@@ -15,6 +15,5 @@ token_table = []
 
 def build_token_table(tokens):
     global token_list, token_table
-    t_list
     # last part
-    return
+    return []

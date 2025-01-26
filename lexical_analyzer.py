@@ -45,22 +45,16 @@ def tokenize(dir="./sampels/code.cpp"):
     try:
         with open(dir, "r") as file:
             input_lines = file.readlines()  
-        if __name__ == "__main__":
-            print("The code:\n_______________")
-            for line in input_lines:
-                print(line, end = "")
-            print("_______________")
-        return lexical_analyzer(input_lines)
+        tokens = lexical_analyzer(input_lines)
+        for token in tokens:
+            print(f"{token[0]}, in line {token[1]}")
+        return tokens
     except FileNotFoundError:
         print(f"~ oordak Error:\nFile not found at {dir}")
     except Exception as e:
-        print(f"~ oordak Error:\nAn error occurred: {e}")    
+        print(f"~ oordak Error:\nAn error occurred: {e}")
+    exit()
     return []
 
-def __main__():
-    token_list = tokenize()
-    for token in token_list:
-        print(f"{token[0]}, in line {token[1]}")
-
 if __name__ == "__main__":
-    __main__()
+    tokenize()
