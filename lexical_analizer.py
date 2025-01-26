@@ -1,3 +1,5 @@
+seperator = "\0"
+
 fsm_graph = {
     "start": {
         "num1": lambda c: c.isdigit(),
@@ -143,9 +145,14 @@ def run_fsm(text):
 
 def tokenize(dir = './sampels/code.cpp'):    
     all_tokens = []
-    cpp_code = open(dir, 'r').read().replace("\n", " $ ")
+    cpp_code = open(dir, 'r').read()
+    index = cpp_code.find(seperator)
+    if index != -1:
+        print(f"Error:\nUnauthorized character found: character number {index}")
+        exit()
+    cpp_code = cpp_code.replace("\n", " " + seperator + " ")
     cpp_code = cpp_code.split()
-    cpp_code.append("$")
+    cpp_code.append(seperator)
     if __name__ == "__main__":
         print(cpp_code)
     all_tokens = run_fsm(cpp_code)

@@ -1,14 +1,6 @@
 from lexical_analizer import *
 
-class Token:
-    def __init__(self, cat, val, id, rank, line, ind):
-        self.cat = cat
-        self.val = val
-        self.id = id
-        self.rank = rank
-        self.line = line
-        self.ind = ind
-        return
+from build_token_table import *
 
 class ParsNode:
     def __init__(self, ind):
@@ -19,15 +11,14 @@ class ParsNode:
 n = 0
 nt = 0
 te = 0
-token_list = []
 productions = []
 pars_table = []
-token_table = []
 pars_tree = []
 np_parser = []
 terminal = []
 symbol = []
 childs = []
+par = []
 symbol_dict = {}
 
 def enum_symbols(dir="./grammers/cppiler"):
@@ -88,17 +79,11 @@ def prepare_p_table(dir="./grammers/cppiler"):
             idx += 1
     return
 
-def build_token_table():
-    global token_list
-    t_list = token_list
-    # last part
-    return
-
 def build_pars_tree():
-    global pars_tree, childs, n, token_list, np_parser
+    global pars_tree, childs, n, token_list, np_parser, par
     sp_char = Token(cat="Special", val="$", id=-1, rank=len(token_list) + 1, line="EOF", ind=symbol_dict["$"])
     token_list.append(sp_char)
-    pars_tree = np_parser = []
+    pars_tree = np_parser = par = []
     pointer = 0
     cnt = 0
     stack = [[symbol_dict["$"], cnt]]
@@ -136,6 +121,7 @@ def build_pars_tree():
                     stack.append([e, cnt])
                     pars_tree[stack_back[1]].adj.append([e, cnt])
                     pars_tree.append(ParsNode(e))
+                    par.append(stack_back[1])
                     cnt += 1
                 pars_tree[stack_back[1]].adj.reverse()
             else:
@@ -164,7 +150,6 @@ def build_pars_tree():
     return
 
 def __main__():
-    global token_list
     print("Loading data ...")
     enum_symbols()
     prepare_productions()
@@ -172,7 +157,7 @@ def __main__():
     print("-----------------\nTokenizing the sampel ...")
     token_list = tokenize()
     print("-----------------\nBuilding the token table ...")
-    build_token_table()
+    create_token_table(token_list)
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
     print("-----------------\nDone!")
