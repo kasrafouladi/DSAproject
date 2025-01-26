@@ -1,4 +1,4 @@
-from lexical_analizer import *
+from lexical_analyzer import *
 
 class Token:
     def __init__(self, cat, val, id, rank, line, ind):
@@ -13,7 +13,7 @@ class Token:
 token_list = []
 token_table = []
 
-def create_token_table(t_list):
+def build_token_table(t_list):
     global token_list, token_table
     t_list
     # last part

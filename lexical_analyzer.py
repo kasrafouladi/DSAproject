@@ -36,25 +36,18 @@ def lexical_analyzer(code_lines):
                     index += 1
     return tokens
 
-print("")
-input_lines = []
-while True:
-    line = input()
-    if line.strip() == "":
-        break
-    input_lines.append(line)
-
-tokens = lexical_analyzer(input_lines)
-
-token_list = []
-for token in tokens:
-    token_list.append(token)
-    
-#print(token_list)
 
 def __main__():
-    for token in tokens:
-        print(token, flush = True)
+    print("---------------------------", flush=True)
+    input_lines = []
+    while True:
+        line = input()
+        if line.strip() == "$":
+            break
+        input_lines.append(line)
+    tokens = lexical_analyzer(input_lines)
+    for e in tokens:
+        print(e, flush=True)
 
 if __name__ == "__main__":
     __main__()
