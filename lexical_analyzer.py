@@ -114,6 +114,14 @@ def modify_tokens(tokens):
                 "value": token_value,
                 "line": line_number
             }
+        elif token_type == "number":  
+            modified_token = {
+                "tokentype": token_type,
+                "token": "number",
+                "value": token_value,
+                "line": line_number
+            }
+            
         else:
         
             modified_token = {
@@ -133,3 +141,4 @@ def modify_tokens(tokens):
 modified_tokens = modify_tokens(tokens)
 for token in modified_tokens:
     print(token)
+

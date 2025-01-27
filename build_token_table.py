@@ -17,3 +17,4 @@ def build_token_table(tokens):
     global token_list, token_table
     # last part
     return []
+
