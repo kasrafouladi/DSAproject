@@ -22,6 +22,7 @@ int main(){
         }
         cout << endl;
         i = i + 1;
+        int a = 32;
         continue;
     }
     while(1 == 1){

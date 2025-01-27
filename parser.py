@@ -138,9 +138,13 @@ def build_pars_tree():
     print("Adjancy list of pars tree:")
     for i in range(len(pars_tree)):
         if len(pars_tree[i].adj) > 0:
-            print(f"[{i}, {symbol[pars_tree[i].ind]}]: ( ", end="")
+            print(f"[index: {i}, token: {symbol[pars_tree[i].ind]}]: ( ", end="")
             for e in pars_tree[i].adj:
-                print(f"[{e}, {symbol[pars_tree[e].ind]}]", end = " ")
+                if pars_tree[e].rank == -1:
+                    print(f"[index: {e}, token: {symbol[pars_tree[e].ind]}]", end = " ")
+                else:
+                    value = token_list[pars_tree[e].rank]["value"]
+                    print(f"[index: {e}, token: {symbol[pars_tree[e].ind]}, value: {value}]", end = " ")
             print(")\n")
     print("----------------------------")
     return
@@ -202,19 +206,24 @@ def search(u, target, target_ind, in_id):
     return u == target_ind
 
 def print_declartion(index):
-    global pars_tree, target_stack
-    
-    if (index not in range(pars_tree(len))) or (not symbol[pars_tree[index].ind].startswith("identifier")):
+    global pars_tree, target_stack, token_list
+
+    if index not in range(len(pars_tree)):
         print("It's not an identifier, try again ...")
-    
+        return
+
+    if not symbol[pars_tree[index].ind].startswith("identifier"):
+        print("It's not an identifier, try again ...")
+        return
+
     search(1, token_list[pars_tree[index].rank], index, False)
-    
+
     if len(target_stack) > 0:
         back = target_stack[len(target_stack) - 1]
         print(f"It was declared in the line number {back[1]}:\n --> ", end = "")
         for token in token_list:
             if token["line"] == back[1]:
-                print(token["value"], end = "")
+                print(token["value"], end = " ")
         print("\n____________")
     
     else:

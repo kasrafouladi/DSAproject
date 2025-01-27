@@ -18,11 +18,11 @@ def __main__():
     file_path = get_file_path()
     pars(dir=file_path, grammer='./grammers/cppiler')
     while True:
-        response = input("Do you want to search an identifier to find it's declaretion?(y/any other input)\n")
-        if response != 'y':
+        response = input("Do you want to search an identifier to find it's declaretion?(yes:enter the index/no: enter -1)\n")
+        if response == '-1':
             break
         try:
-            print_declartion(int(input("enter the index\n")))
+            print_declartion(int(response))
         except Exception as e:
             print("invalid input")
     print("byebye")
