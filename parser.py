@@ -22,6 +22,7 @@ symbol = []
 candidates = []
 symbol_dict = {}
 
+#O(n) فقط ورودی میخونه
 def enum_symbols(dir="./grammers/cppiler"):
     global n, nt, te, symbol_dict, symbol, terminal
     symbol = []
@@ -41,6 +42,7 @@ def enum_symbols(dir="./grammers/cppiler"):
         symbol_dict[symbol[i]] = i
     return
 
+# O(G * n) فقط می خونیم میریم جلو و خب هر پروداکشن می تونه ان تا نماد داشته باشه جی هم منظورم تعداد پروداکشن هاست
 def prepare_productions(dir="./grammers/cppiler"):
     global productions, n
     productions = [[] for i in range(n)]
@@ -60,6 +62,7 @@ def prepare_productions(dir="./grammers/cppiler"):
                 idx += 1
     return
 
+# O(te * nt) حاصل ضرب نماد های ترمینال و نماد های غیر ترمینال
 def prepare_p_table(dir="./grammers/cppiler"):
     global pars_table, candidates, n
     pars_table = [[[] for j in range(n)] for i in range(n)]
@@ -80,6 +83,7 @@ def prepare_p_table(dir="./grammers/cppiler"):
             idx += 1
     return
 
+# O(توکن ها کد) چون هیچ پروداکشنی نداریم که از یک سمبل غیر ترمینال به یدونه غیر ترمینال دیگه باشه پس تعداد همه راس ها از اردر تعداد توکن های کده و کمتر از دو برابر تعداد توکن های کده
 def build_pars_tree():
     global pars_tree, candidates, n, token_list
     sp_char = {'tokentype': 'Special token', 'token': '$', 'value': '$', 'line': 'inf', 'rank': 'inf'}
@@ -149,6 +153,7 @@ def build_pars_tree():
     print("----------------------------")
     return
 
+#  حاصل جمع همه تابع هایی که توش کال شده که میشه برابر تعداد توکن های کد به علاوه تعداد پروداکشن ها در نماد ها به علاوه ضرب نماد های ترمینال در غیر ترمینال
 def pars(dir="./sampels/code.cpp", grammer="./grammers/cppiler"):
     global token_list
     print("Loading data ...")

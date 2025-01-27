@@ -1,6 +1,8 @@
 from lexical_analyzer import *
 import hashlib
 
+# O(token * lg(token)) چون روشون ایتریت می کنیم و سورت می کنیم کلا اردر هش رو هم میشه 1 در نظر گرفت
+
 def build_token_table(token_list):
     
     partition_by_type = {

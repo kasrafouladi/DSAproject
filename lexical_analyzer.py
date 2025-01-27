@@ -18,6 +18,8 @@ def is_white_space(c):
 token_list = []
 token_table = []
 
+# میشه از اردر طول کد چون تنها کاری که توی همه تابع های این فایل می کنیم فقط ایتریت کردنه و روی کد هم ایتریت می کنیم
+
 def lexical_analyzer(code_lines):
     tokens = []  
     for line_number, line in enumerate(code_lines, start=1):
