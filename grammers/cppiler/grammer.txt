@@ -1,19 +1,21 @@
-Start S N M T Id L Init Z Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C Identifier
+Start S N M T V Id L Init Z Operation P O W Assign Expression K Lc Condition Condition1 Input F Output H C Identifier
 ~~non-terminals
 
-e #include < iostream > using namespace std ; int  main ( ) { } return float while [ ] identifier(0) identifier(1) number , + * - / % =(0) ! if else(0) cin cout string endl else(1) =(1) break continue $
+e #include <(0) <(1) iostream >(0) >(1) using namespace std ; int  main ( ) { } return float while [ ] identifier(0) identifier(1) number , + * - / % =(0) ! if else(0) cin cout string endl else(1) =(1) break continue $
 ~~terminals
 
 Start
     S'N'M' ~
 S
-    #include'<'iostream'>' ~
+    #include'<(0)'iostream'>(0)' ~
 N
     using'namespace'std';' ~
 M
     int'main'(')'{'T'}' ~
 T
-    Id'T' L'T' Lc'T' Input'T' Output'T' return'Identifier';'T' break';'T' continue';'T' e' ~
+    Id'T' L'T' Lc'T' Input'T' Output'T' V'T' e' ~
+V
+    return'Operation';' break';' continue';' ~
 Id
     int'L' float'L' ~
 L
@@ -35,7 +37,7 @@ Assign
 Expression
     Operation'K'Operation' ~
 K
-    =(1)'=(0)' >'=(0)' <'=(0)' !'=(0)' ~
+    =(1)'=(0)' >(0)' <(0)' >(1)'=(0)' <(1)'=(0)' !'=(0)' ~
 Lc
     while'('Expression')'{'T'}' Condition' ~
 Condition
@@ -45,11 +47,11 @@ Condition1
 Input
     cin'F' ~
 F
-    >'>'Identifier'F' ;' ~
+    >(0)'>(0)'Identifier'F' ;' ~
 Output
     cout'H' ~ 
 H
-    <'<'C'H' ;' ~
+    <(0)'<(0)'C'H' ;' ~
 C
     string' Operation' endl' ~
 Identifier
@@ -61,6 +63,12 @@ else{}  ===> else(0)
 
 = (identifier =) | (=)     ===> =(1)
 =                          ===> =(0)
+
+<= ===> <(1)
+<  ===> <(0)
+
+>= ===> >(1)
+>  ===> >(0)
 
 identifier[] ===> identifier(1)
 identifier   ===> identifier(0)

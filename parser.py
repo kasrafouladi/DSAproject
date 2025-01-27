@@ -14,7 +14,7 @@ te = 0
 productions = []
 pars_table = []
 pars_tree = []
-np_parser = []
+token_list = []
 terminal = []
 symbol = []
 candidates = []
@@ -22,7 +22,7 @@ par = []
 symbol_dict = {}
 
 def enum_symbols(dir="./grammers/cppiler"):
-    global n, nt, te, symbol_dict, symbol
+    global n, nt, te, symbol_dict, symbol, terminal
     symbol = []
     p_table = open(dir + "/symbols.txt", 'r')
     symbol = p_table.readline().split()
@@ -80,42 +80,45 @@ def prepare_p_table(dir="./grammers/cppiler"):
     return
 
 def build_pars_tree():
-    global pars_tree, candidates, n, token_list, np_parser, par
-    sp_char = Token(cat="Special", val="$", id=-1, rank=len(token_list) + 1, line="EOF", ind=symbol_dict["$"])
+    global pars_tree, candidates, n, token_list, par
+    sp_char = {'tokentype': 'Special token', 'token': '$', 'value': '$', 'line': 'inf', 'rank': 'inf'}
     token_list.append(sp_char)
-    pars_tree = np_parser = par = []
+    par = []
     pointer = 0
     cnt = 0
+    pars_tree = [ParsNode(symbol_dict["$"]), ParsNode(symbol_dict["Start"])]
     stack = [[symbol_dict["$"], cnt]]
     cnt += 1
     stack.append([symbol_dict["Start"], cnt])
     cnt += 1
     while True:
         stack_back = stack[len(stack) - 1]
+        pointer_ind = symbol_dict[token_list[pointer]["token"]]
+        rank = token_list[pointer]["rank"]
+        line = token_list[pointer]["line"]
         if terminal[stack_back[0]]:
-            if token_list[pointer].ind == stack_back[0] or symbol[stack_back[0]] == "e":
+            if pointer_ind == stack_back[0] or symbol[stack_back[0]] == "e":
                 stack.pop()
                 if symbol[stack_back[0]] != "e":
                     pointer += 1
-                if symbol[stack_back[0]] == "$" and pointer == len(stack):
+                if symbol[stack_back[0]] == "$" and pointer == len(token_list):
                     print("\n______________\nDone Parsing!\n______________\n")
                     break
             else:
                 print("Hamta Error:")
                 if symbol[stack_back[0]] == "$":
-                    print(f"In parsing, a compilation eror accoured. An extra token \"{symbol[token_list[pointer].ind]}\" is found in line {token_list[pointer].line}")
-                    print(f"Something is wrong about token numebr {token_list[pointer].rank}")
+                    print(f"In parsing, an eror accoured. An extra token \"{symbol[pointer_ind]}\" is found in line {line}")
+                    print(f"Something is wrong about token numebr {rank}")
                 else:
-                    print(f"In parsing, a compilation eror accoured. Token: [{symbol[stack_back[0]]}] is missing in line {token_list[pointer].line} before \"{token_list[pointer].ind}\"")
-                    print(f"Something is wrong about token numebr {token_list[pointer].rank}")
-                break
+                    print(f"In parsing, an eror accoured. Token: \"{symbol[stack_back[0]]}\" is missing in line {line} before \"{pointer_ind}\"")
+                    print(f"Something is wrong about token numebr {rank}")
+                exit()
         else:
-            if len(pars_table[stack_back[0]][token_list[pointer]]) > 0:
+            if len(pars_table[stack_back[0]][pointer_ind]) > 0:
                 # reason behind [0]: this is a ll(1) parser but i wrote it in a generalized way
-                prod = pars_table[stack_back[0]][token_list[pointer]][0]
+                prod = pars_table[stack_back[0]][pointer_ind][0]
                 # [::-1] reverses the string but its like called by value and the list doesn't change
                 lst = productions[stack_back[0]][prod][::-1]
-                np_parser.append([stack_back[0], prod])
                 stack.pop()
                 for e in lst:
                     stack.append([e, cnt])
@@ -126,38 +129,31 @@ def build_pars_tree():
                 pars_tree[stack_back[1]].adj.reverse()
             else:
                 print("Hamta Error:")
-                print(f"In parsing, a compilation eror accoured. One of the token(s): {candidates[stack_back[0]]} are missing in line {token_list[pointer].line}.")
-                print("- $ is a special token which means the end of the file")
-                print(f"Something is wrong about token numebr {token_list[pointer].rank}")
-                break
-    if __name__ == "__main__":
-        print("----------------------------")
-        print("Adjancy list of pars tree:")
-        for i in range(len(pars_tree)):
-            if len(pars_tree[i].adj) > 0:
-                print(f"{symbol[pars_tree[i].ind]}: ( ", end="")
-                for e in pars_tree[i].adj:
-                    print(symbol[e[0]], end = " ")
-                print(")\n")
-        print("----------------------------")
-        print("Np-parser productions:")
-        for e in range(len(np_parser)):
-            print(f"{symbol[e[0]]}: ( ", end="")
-            for e1 in np_parser[e[0]][e[1]]:
-                print(symbol[e1], end = " ")
+                print(f"In parsing, an eror accoured. One of the token(s): {candidates[stack_back[0]]} are missing in line {line}.")
+                print("* $ is a special token which means the end of the file")
+                print(f"Something is wrong about token numebr {rank}")
+                exit()
+    print("----------------------------")
+    print("Adjancy list of pars tree:")
+    for i in range(len(pars_tree)):
+        if len(pars_tree[i].adj) > 0:
+            print(f"[{i}, {symbol[pars_tree[i].ind]}]: ( ", end="")
+            for e in pars_tree[i].adj:
+                print(f"[{e[1]}, {symbol[e[0]]}]", end = " ")
             print(")\n")
-        print("----------------------------")
+    print("----------------------------")
     return
 
-def pars(dir="./sampels/code.cpp"):
+def pars(dir="./sampels/code.cpp", grammer="./grammers/cppiler"):
+    global token_list
     print("Loading data ...")
-    enum_symbols()
-    prepare_productions()
-    prepare_p_table()
+    enum_symbols(grammer)
+    prepare_productions(grammer)
+    prepare_p_table(grammer)
     print("-----------------\nTokenizing the sampel ...")
-    tokens = tokenize(dir)
+    token_list = tokenize(dir)
     print("-----------------\nBuilding the token table ...")
-    build_token_table(tokens)
+    #build_token_table()
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
     print("-----------------\nDone!")

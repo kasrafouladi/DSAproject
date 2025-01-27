@@ -1,6 +1,6 @@
 import re
 
-reserved_words = ["int", "float", "break", "continue", "if", "while", "return", "main", "#include", "using", "namespace", "std", "cout", "cin", "endl"]
+reserved_words = ["int", "float", "break", "iostream", "continue", "if", "while", "return", "main", "#include", "using", "namespace", "std", "cout", "cin", "endl"]
 
 patterns = { 
     "#include": r"#include",
@@ -14,6 +14,9 @@ def is_white_space(c):
     if c == " " or c == "\t" or c == "\n":
         return True
     return False
+
+token_list = []
+token_table = []
 
 def lexical_analyzer(code_lines):
     tokens = []  
@@ -41,41 +44,19 @@ def lexical_analyzer(code_lines):
                     exit()
     return tokens
 
-def tokenize(dir="./sampels/code.cpp"):
-    try:
-        with open(dir, "r") as file:
-            input_lines = file.readlines()  
-        tokens = lexical_analyzer(input_lines)
-        for token in tokens:
-            print(f"{token[0]} {token[1]}")
-        return tokens
-    except FileNotFoundError:
-        print(f"~ oordak Error:\nFile not found at {dir}")
-    except Exception as e:
-        print(f"~ oordak Error:\nAn error occurred: {e}")
-    exit()
-    return []
-
-if __name__ == "__main__":
-    tokenize()
-
-tokens = tokenize(dir="./sampels/code.cpp")
-
 def modify_tokens(tokens):
-    modified_tokens = []
-
+    token_list = []
     for i, token in enumerate(tokens):
         token_type = token[0][0]  
         token_value = token[0][1]  
         line_number = token[1]
-
-        if token_type == "symbol" and token_value == "=":
+        modified_token = {}
+        if token_value == "=" or token_value == "<" or token_value == ">":
             if i + 1 < len(tokens):
                 next_token = tokens[i + 1][0]
                 if next_token[1] == "=":  
                     token_suffix = "(1)"
-                elif next_token[0] == "identifier":  
-                    
+                elif token_value == "=" and next_token[0] == "identifier":
                     if i + 2 < len(tokens) and tokens[i + 2][0][1] == "=":
                         token_suffix = "(1)"  
                     else:
@@ -86,12 +67,12 @@ def modify_tokens(tokens):
                 token_suffix = "(0)"  
             modified_token = {
                 "tokentype": token_type,
-                "token": f"={token_suffix}",
-                "value": "=",
-                "line": line_number
+                "token": f"{token_value}{token_suffix}",
+                "value": token_value,
+                "line": line_number,
+                "rank": i + 1
             }
-        elif token_type == "reservedword" and token_value == "else":
-            
+        elif token_value == "else":
             if i + 1 < len(tokens) and tokens[i + 1][0][1] == "if":
                 token_suffix = "(1)"  
             else:
@@ -100,45 +81,54 @@ def modify_tokens(tokens):
                 "tokentype": token_type,
                 "token": f"else{token_suffix}",
                 "value": "else",
-                "line": line_number
+                "line": line_number,
+                "rank": i + 1
             }
         elif token_type == "identifier":
-           
             if i + 1 < len(tokens) and tokens[i + 1][0][1] == "[":
                 token_suffix = "(1)"  
             else:
                 token_suffix = "(0)"  
             modified_token = {
                 "tokentype": token_type,
-                "token": f"{token_value}{token_suffix}",
+                "token": f"identifier{token_suffix}",
                 "value": token_value,
-                "line": line_number
+                "line": line_number,
+                "rank": i + 1
             }
-        elif token_type == "number":  
+        elif token_type == "number" or token_type == "string":  
             modified_token = {
                 "tokentype": token_type,
-                "token": "number",
+                "token": token_type,
                 "value": token_value,
-                "line": line_number
+                "line": line_number,
+                "rank": i + 1
             }
-            
         else:
-        
             modified_token = {
                 "tokentype": token_type,
                 "token": token_value,
                 "value": token_value,
-                "line": line_number
+                "line": line_number,
+                "rank": i + 1
             }
+        token_list.append(modified_token)
+    return token_list
 
-        
-        modified_tokens.append(modified_token)
+def tokenize(dir="./sampels/code.cpp"):
+    try:
+        with open(dir, "r") as file:
+            input_lines = file.readlines()  
+        tokens = modify_tokens(lexical_analyzer(input_lines))
+        for token in tokens:
+            print(token)
+        return tokens
+    except FileNotFoundError:
+        print(f"~ oordak Error:\nFile not found at {dir}")
+    except Exception as e:
+        print(f"~ oordak Error:\nAn error occurred: {e}")
+    exit()
+    return []
 
-    return modified_tokens
-
-
-
-modified_tokens = modify_tokens(tokens)
-for token in modified_tokens:
-    print(token)
-
+if __name__ == "__main__":
+    tokenize()

@@ -9,25 +9,36 @@ int main(){
     while(i < x){
         j = 0;
         while(j <= i){
-            cout << "*";
+            if(j % 2 == 0){
+                cout << "***";
+            }
+            else if(j % 3 == 0){
+                cout << "**";
+            }
+            else{
+                cout << "*";
+            }
             j = j + 1;
         }
         cout << endl;
         i = i + 1;
+        continue;
     }
-    while(true){
+    while(1 == 1){
         break;
     }
     cout<<"___________________"<<endl;
-    int khar3[-(-1)];
-    "*+-/%=!;,{}()[]<>";
+    int a, khar3[1e5];
+    float b = 1, c;
+    cout << "*+-/%=!;,{}()[]<>";
     a = 1;
-    b = 1.0;
-    c = 1e8;
-    d = 1.0e8;
-    e = 1e+8;
-    f = 1.0e+8;
-    g = 1e-1;
-    h = 1.0e-1;
+    a = b = 1.0;
+    a = b = c = 1e8;
+    a = 1.0e8;
+    a = 1e+8;
+    a = 1.0e+8;
+    a = 1e-1;
+    a = 1.0e-1;
+    cout << "________ int ___________" << endl;
     return 0;
 }
