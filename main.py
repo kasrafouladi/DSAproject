@@ -14,6 +14,9 @@ def get_file_path():
     
     return file_path
 
-file_path = get_file_path()
+def __main__():
+    file_path = get_file_path()
+    pars(dir=file_path, grammer='./grammers/cppiler')
 
-pars(file_path)
+if __name__ == "__main__":
+    __main__()

@@ -153,7 +153,7 @@ def pars(dir="./sampels/code.cpp", grammer="./grammers/cppiler"):
     print("-----------------\nTokenizing the sampel ...")
     token_list = tokenize(dir)
     print("-----------------\nBuilding the token table ...")
-    sort_tokens(token_list)
+    build_token_table(token_list)
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
     print("-----------------\nDone!")

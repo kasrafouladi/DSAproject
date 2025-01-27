@@ -28,7 +28,8 @@ int main(){
         break;
     }
     cout<<"___________________"<<endl;
-    int a, khar3[1e5];
+    int e = 1e5;
+    int a, khar3[e];
     float b = 1, c;
     cout << "*+-/%=!;,{}()[]<>";
     a = 1;
