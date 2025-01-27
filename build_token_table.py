@@ -18,3 +18,26 @@ def build_token_table(tokens):
     # last part
     return []
 
+
+print("--------------------------------------------------------------")
+
+def sort_tokens(modified_tokens):
+    type_order = {
+        "string": 0,
+        "number": 1,
+        "symbol": 2,
+        "identifier": 3,
+        "reservedword": 4
+    }
+    
+    sorted_tokens = sorted(
+        modified_tokens,
+        key=lambda token: (type_order[token["tokentype"]], token["value"])
+    )
+    return sorted_tokens
+
+sorted_tokens = sort_tokens(modified_tokens)
+
+for token in sorted_tokens:
+    print(token)
+

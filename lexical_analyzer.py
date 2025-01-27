@@ -47,7 +47,7 @@ def tokenize(dir="./sampels/code.cpp"):
             input_lines = file.readlines()  
         tokens = lexical_analyzer(input_lines)
         for token in tokens:
-            print(f"{token[0]}, in line {token[1]}")
+            print(f"{token[0]} {token[1]}")
         return tokens
     except FileNotFoundError:
         print(f"~ oordak Error:\nFile not found at {dir}")
@@ -140,28 +140,5 @@ def modify_tokens(tokens):
 
 modified_tokens = modify_tokens(tokens)
 for token in modified_tokens:
-    print(token)
-
-
-print("--------------------------------------------------------------")
-
-def sort_tokens(modified_tokens):
-    type_order = {
-        "string": 0,
-        "number": 1,
-        "symbol": 2,
-        "identifier": 3,
-        "reservedword": 4
-    }
-    
-    sorted_tokens = sorted(
-        modified_tokens,
-        key=lambda token: (type_order[token["tokentype"]], token["value"])
-    )
-    return sorted_tokens
-
-sorted_tokens = sort_tokens(modified_tokens)
-
-for token in sorted_tokens:
     print(token)
 
