@@ -23,8 +23,8 @@ def build_token_table(token_list):
             token_string = str(token)
             hash_object = hashlib.sha256(token_string.encode())
             hashed_token = hash_object.hexdigest()
-            hashed_tokens.append((token, hashed_token)) # ذخیره توکن اصلی همراه با هش
-        
+            hashed_tokens.append((token, hashed_token)) 
+            
         sorted_tokens = sorted(
             hashed_tokens,
             key = lambda token: token[1]
@@ -34,7 +34,7 @@ def build_token_table(token_list):
 
         print(f"___________\n{tokentype}:\n")
         
-        # نمایش هش‌هاو توکن ها
+    
 
         for token, hashed in sorted_tokens:
             print(f"{token}\n{hashed}\n")
