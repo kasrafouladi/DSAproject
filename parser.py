@@ -3,8 +3,10 @@ from lexical_analyzer import *
 from build_token_table import *
 
 class ParsNode:
-    def __init__(self, ind):
+    def __init__(self, ind, par):
         self.ind = ind
+        self.rank = -1
+        self.par = par
         self.adj = []
         return
 
@@ -18,7 +20,6 @@ token_list = []
 terminal = []
 symbol = []
 candidates = []
-par = []
 symbol_dict = {}
 
 def enum_symbols(dir="./grammers/cppiler"):
@@ -80,13 +81,12 @@ def prepare_p_table(dir="./grammers/cppiler"):
     return
 
 def build_pars_tree():
-    global pars_tree, candidates, n, token_list, par
+    global pars_tree, candidates, n, token_list
     sp_char = {'tokentype': 'Special token', 'token': '$', 'value': '$', 'line': 'inf', 'rank': 'inf'}
     token_list.append(sp_char)
-    par = []
     pointer = 0
     cnt = 0
-    pars_tree = [ParsNode(symbol_dict["$"]), ParsNode(symbol_dict["Start"])]
+    pars_tree = [ParsNode(symbol_dict["$"], -1), ParsNode(symbol_dict["Start"], -1)]
     stack = [[symbol_dict["$"], cnt]]
     cnt += 1
     stack.append([symbol_dict["Start"], cnt])
@@ -100,6 +100,8 @@ def build_pars_tree():
             if pointer_ind == stack_back[0] or symbol[stack_back[0]] == "e":
                 stack.pop()
                 if symbol[stack_back[0]] != "e":
+                    if symbol[stack_back[0]] != "$":
+                        pars_tree[stack_back[1]].rank = pointer
                     pointer += 1
                 if symbol[stack_back[0]] == "$" and pointer == len(token_list):
                     print("\n______________\nDone Parsing!\n______________\n")
@@ -122,9 +124,8 @@ def build_pars_tree():
                 stack.pop()
                 for e in lst:
                     stack.append([e, cnt])
-                    pars_tree[stack_back[1]].adj.append([e, cnt])
-                    pars_tree.append(ParsNode(e))
-                    par.append(stack_back[1])
+                    pars_tree[stack_back[1]].adj.append(cnt)
+                    pars_tree.append(ParsNode(e, stack_back[1]))
                     cnt += 1
                 pars_tree[stack_back[1]].adj.reverse()
             else:
@@ -139,7 +140,7 @@ def build_pars_tree():
         if len(pars_tree[i].adj) > 0:
             print(f"[{i}, {symbol[pars_tree[i].ind]}]: ( ", end="")
             for e in pars_tree[i].adj:
-                print(f"[{e[1]}, {symbol[e[0]]}]", end = " ")
+                print(f"[{e}, {symbol[pars_tree[e].ind]}]", end = " ")
             print(")\n")
     print("----------------------------")
     return
@@ -156,8 +157,69 @@ def pars(dir="./sampels/code.cpp", grammer="./grammers/cppiler"):
     build_token_table(token_list)
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
-    print("-----------------\nDone!")
-    print("byebye")
+    print("-----------------\nDone Parsing!")
+    return
+
+target_stack = [[-1, -1]]
+id_stack = []
+
+depth = 0
+
+def search(u, target, target_ind, in_id):
+    global pars_tree, target_stack, id_stack, token_list, depth
+    
+    if symbol[pars_tree[u].ind] == "{":
+        depth += 1
+    
+    if not in_id and symbol[pars_tree[u].ind] == "Id":
+        in_id = True
+        id_stack = ['$']
+    
+    if in_id and pars_tree[u].rank != -1:
+        token = token_list[pars_tree[u].rank]
+        back = id_stack[len(id_stack) - 1]
+        if back == ',' or back == 'int' or back == "float":
+            if token["value"] == target["value"]:
+                target_stack.append([depth, token["line"]])
+        id_stack.append(token["value"])
+    
+    for v in pars_tree[u].adj:
+        if search(v, target, target_ind, in_id):
+            return True
+    
+    if symbol[pars_tree[u].ind] == "Id":
+        id_stack = ['$']
+    
+    if symbol[pars_tree[u].ind] == "}":
+        while True:
+            back = target_stack[len(target_stack) - 1]
+            if back[0] == depth:
+                target_stack.pop()
+            else:
+                break
+        depth -= 1
+    
+    return u == target_ind
+
+def print_declartion(index):
+    global pars_tree, target_stack
+    
+    if (index not in range(pars_tree(len))) or (not symbol[pars_tree[index].ind].startswith("identifier")):
+        print("It's not an identifier, try again ...")
+    
+    search(1, token_list[pars_tree[index].rank], index, False)
+    
+    if len(target_stack) > 0:
+        back = target_stack[len(target_stack) - 1]
+        print(f"It was declared in the line number {back[1]}:\n --> ", end = "")
+        for token in token_list:
+            if token["line"] == back[1]:
+                print(token["value"], end = "")
+        print("\n____________")
+    
+    else:
+        print("It wasn't declared in this scope\n____________")
+    
     return
 
 if __name__ == "__main__":
