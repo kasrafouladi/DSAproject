@@ -157,6 +157,7 @@ def pars(dir="./sampels/code.cpp", grammer="./grammers/cppiler"):
     print("-----------------\nBuilding the pars tree ...")
     build_pars_tree()
     print("-----------------\nDone!")
+    print("byebye")
     return
 
 if __name__ == "__main__":
