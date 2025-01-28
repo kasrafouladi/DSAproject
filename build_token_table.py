@@ -27,8 +27,8 @@ def build_token_table(token_list):
             token_string = str(token)
             hash_object = hashlib.sha256(token_string.encode())
             hashed_token = hash_object.hexdigest()
-            hashed_tokens.append((token, hashed_token))
-        
+            hashed_tokens.append((token, hashed_token)) 
+            
         sorted_tokens = sorted(
             hashed_tokens,
             key = lambda token: token[1]
