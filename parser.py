@@ -149,7 +149,7 @@ def build_pars_tree():
                 else:
                     value = token_list[pars_tree[e].rank]["value"]
                     print(f"[index: {e}, token: {symbol[pars_tree[e].ind]}, value: {value}]", end = " ")
-            print(")\n")
+            print(")")
     print("----------------------------")
     return
 

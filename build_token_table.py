@@ -19,7 +19,7 @@ def build_token_table(token_list):
     for token in token_list:
         partition_by_type[token['tokentype']].append(token)
 
-    print("Token Table:\n\n")
+    print("Token Table:")
 
     for tokentype, tokens in partition_by_type.items():
         hashed_tokens = []
@@ -39,6 +39,6 @@ def build_token_table(token_list):
         print(f"___________\n{tokentype}:\n")
         
         for token, hashed in sorted_tokens:
-            print(f"{token}\n{hashed}\n")
+            print(f"{token}, hash = {hashed}")
 
     return token_table
