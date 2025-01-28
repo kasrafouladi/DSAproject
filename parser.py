@@ -174,6 +174,7 @@ id_stack = []
 
 depth = 0
 
+# simpel dfs in tree and a stack so its in O(pars tree nodes) = O(tokens in the code)
 def search(u, target, target_ind, in_id):
     global pars_tree, target_stack, id_stack, token_list, depth
     

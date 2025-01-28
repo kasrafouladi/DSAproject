@@ -22,12 +22,14 @@ vector<vector<vector<int>>> productions;
 ifstream file;
 ofstream first_follow, ll_1_pars, symbols, prd;
 
+// O(|set2| lg|set2|)
 void unite(set<int> &set1, set<int> &set2){
     for(auto e: set2)
         set1.insert(e);
     return;
 }
 
+// if we mark all of the nodes the complexity will be O(G n lg n)
 void dfs_first(int u, int prv){
     par[u] = prv;
     mark[u] = in_path[u] = true;
@@ -45,6 +47,7 @@ void dfs_first(int u, int prv){
     return;
 }
 
+// O(G n lg n)
 void dfs_back_edge(int u){
     mark[u] = true;
     for(auto e: back_edges[u]){
@@ -60,6 +63,8 @@ void dfs_back_edge(int u){
     return;
 }
 
+
+// same as dfs_first
 void dfs_last(int u, int prv){
     par[u] = prv;
     mark[u] = in_path[u] = true;
@@ -77,6 +82,7 @@ void dfs_last(int u, int prv){
     return;
 }
 
+// same as dfs_back_edge
 void dfs_back_edge_last(int u){
     mark[u] = true;
     for(auto e: back_edges[u]){
@@ -92,6 +98,7 @@ void dfs_back_edge_last(int u){
     return;
 }
 
+// O(n lg n) map and set queries are in O(lg(size))
 void enumerate_symbols(){
     int cnt = 0;
     while(cnt != 2){
@@ -118,6 +125,7 @@ void enumerate_symbols(){
     return;
 }
 
+// O(n)
 void initialize_vectors(){
     productions.assign(n, {}), last.assign(n, {});
     g.assign(n, {}), g_last.assign(n, {});
@@ -127,6 +135,7 @@ void initialize_vectors(){
     return;
 }
 
+// O(G) G = numebr of productions 
 void build_prod_list(){
     while(true){
         string sym;
@@ -164,6 +173,7 @@ void build_prod_list(){
     return;
 }
 
+// O(G)
 void print_g(){
     cout << "____________________________\n";
     cout << "G adjancey list:";
@@ -177,6 +187,7 @@ void print_g(){
     return;
 }
 
+// O(G)
 void print_g_last(){
     cout << "____________________________\n";
     cout << "G_last adjancey list:";
@@ -190,6 +201,7 @@ void print_g_last(){
     return;
 }
 
+// O(G n lgn)
 void compute_first(){
     back_edges.assign(n, {});
     for(int i = 0; i < n; ++i)
@@ -205,6 +217,7 @@ void compute_first(){
     return;
 }
 
+// same as compute first
 void compute_last(){
     back_edges.assign(n, {});
     for(int i = 0; i < n; ++i)
@@ -220,6 +233,7 @@ void compute_last(){
     return;
 }
 
+// O(n^3)
 void compute_follow(){
     for(int i = 0; i < n; ++i)
         for(const auto &token: productions[i])
@@ -238,6 +252,7 @@ void compute_follow(){
     return;
 }
 
+// O(G)
 void print_grammer(){
     cout << "____________________________\n";
     cout << "Grammer:\n";
@@ -287,12 +302,14 @@ int main(){
     prd.close();
     /// /////
     symbols.open(dir + "/symbols.txt");
+    // O(n) just printintg
     for(int i = 0; i < n; ++i)
-        symbols << symbol[i] << " ";
+        symbols << symbol[i] << "(" << i << ") ";
     symbols << '\n';
     symbols.close();
     /// //////
     cout << "\n-----------------\nFirst:\n";
+    // O(n^2) becuse sum of size of all Follows, Firsts or Lasts is in O(n^2) 
     for(int i = 0; i < n; ++i){
         cout << "First(" << symbol[i] << "):\n\t{";
         first_follow << first[i].size() << '\n';
@@ -304,6 +321,7 @@ int main(){
         cout << "\b\b}\n";
     }
     cout << "\n-----------------\nLast:\n";
+    // O(n^2) becuse sum of size of all Follows, Firsts or Lasts is in O(n^2) 
     for(int i = 0; i < n; ++i){
         cout << "Last(" << symbol[i] << "):\n\t{";
         for(auto e: last[i])
@@ -311,6 +329,7 @@ int main(){
         cout << "\b\b}\n";
     }
     cout << "\n-----------------\nFollow:\n";
+    // O(n^2) becuse sum of size of all Follows, Firsts or Lasts is in O(n^2) 
     for(int i = 0; i < n; ++i){
         cout << "Follow(" << symbol[i] << "):\n\t{";
         first_follow << follow[i].size() << '\n';
@@ -326,6 +345,7 @@ int main(){
     first_follow.close();
     cout << "\n-----------------\nLL1-Pars-table:\n";
     ll_1_pars.open(dir + "/ll_1_pars.txt");
+    // O(n ^ 2 lg n) becuse the number of pars table cells and map queries are in lg(size)
     for(int i = 0; i < nt; ++i)
         for(int j = nt; j < n; ++j){
                 int k = 0;
