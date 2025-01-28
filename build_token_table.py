@@ -7,7 +7,6 @@ def build_token_table(token_list):
     
     partition_by_type = {
         "string": [],
-        "string": [],
         "number": [],
         "symbol": [],
         "identifier": [],
@@ -31,7 +30,7 @@ def build_token_table(token_list):
             
         sorted_tokens = sorted(
             hashed_tokens,
-            key = lambda token: token[1]
+            key = lambda token: token[0]
         )
         
         token_table.append([tokentype, sorted_tokens])
