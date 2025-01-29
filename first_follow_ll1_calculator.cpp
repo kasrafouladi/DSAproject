@@ -233,7 +233,7 @@ void compute_last(){
     return;
 }
 
-// O(n^3)
+// O(n^3 lg n)
 void compute_follow(){
     for(int i = 0; i < n; ++i)
         for(const auto &token: productions[i])
